@@ -18,6 +18,7 @@ const CATEGORIES: { label: string; value: PropertyCategory }[] = [
   { label: 'Apartment', value: 'apartment' },
   { label: 'Villa', value: 'villa' },
   { label: 'Penthouse', value: 'penthouse' },
+  { label: 'Studio', value: 'studio' },
 ];
 
 export const HeroSearch: React.FC<HeroSearchProps> = ({
