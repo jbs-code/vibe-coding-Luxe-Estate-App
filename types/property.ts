@@ -29,3 +29,10 @@ export interface NavItem {
   href: string;
   active?: boolean;
 }
+
+export interface MarketPropertiesResult {
+  properties: Property[];
+  total: number;
+  totalPages: number;
+  currentPage: number;
+}
