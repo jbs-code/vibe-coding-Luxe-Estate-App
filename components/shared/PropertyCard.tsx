@@ -2,6 +2,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Property } from '@/types/property';
 
 interface PropertyCardProps {
@@ -16,6 +17,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   onClick,
 }) => {
   const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (onToggleFavorite) {
       onToggleFavorite(property.id);
@@ -23,11 +25,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   };
 
   const isRent = property.status === 'rent';
+  const propertyHref = `/propiedades/${property.slug || property.id}`;
 
   return (
-    <article
+    <Link
+      href={propertyHref}
       onClick={() => onClick?.(property)}
-      className="bg-white dark:bg-white/5 border border-transparent dark:border-white/10 rounded-xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 group cursor-pointer h-full flex flex-col"
+      className="bg-white dark:bg-white/5 border border-transparent dark:border-white/10 rounded-xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 group cursor-pointer h-full flex flex-col block"
     >
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
@@ -99,6 +103,6 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           </div>
         </div>
       </div>
-    </article>
+    </Link>
   );
 };

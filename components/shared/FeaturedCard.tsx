@@ -1,7 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
+import Link from 'next/link';
 import { Property } from '@/types/property';
 
 interface FeaturedCardProps {
@@ -16,16 +17,20 @@ export const FeaturedCard: React.FC<FeaturedCardProps> = ({
   onClick,
 }) => {
   const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (onToggleFavorite) {
       onToggleFavorite(property.id);
     }
   };
 
+  const propertyHref = `/propiedades/${property.slug || property.id}`;
+
   return (
-    <div
+    <Link
+      href={propertyHref}
       onClick={() => onClick?.(property)}
-      className="group relative rounded-xl overflow-hidden shadow-soft bg-white dark:bg-white/5 border border-transparent dark:border-white/10 cursor-pointer transition-all duration-300 hover:shadow-xl"
+      className="group relative rounded-xl overflow-hidden shadow-soft bg-white dark:bg-white/5 border border-transparent dark:border-white/10 cursor-pointer transition-all duration-300 hover:shadow-xl block"
     >
       <div className="aspect-[4/3] w-full overflow-hidden relative">
         <img
@@ -97,6 +102,6 @@ export const FeaturedCard: React.FC<FeaturedCardProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };

@@ -1,8 +1,16 @@
 import { Property } from '@/types/property';
 
+const sampleGallery = [
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuCvpJBMaiXUL25hHYwLa_0R6dPhLLM1EuhEt-AVtOy8qSnEi9IcA_RzD5s5ThawY3XG2qw8h4kPqvfP18EY1E5vgA8fs6v7RefCMJ1gY8Gt4uyXGJ85-lcIvL18v8Nlc-U-VOwn1h54yjjg4-KXHt1N5DfuTkQUBdldSELRZeJ6zuZ087NCJ7dDIDaXKJpPgulmd6JC6zD1-Kq00Sb4VXIhVR3IQ1Hd8S6xZkd17QvMHSNqbtKG849PRqHZX3nKLHEWYWWPvbL5_Gs',
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuAbloTFAmeq6ugmfkwyqn3NMGn11PMk4FU0EIHRHvfYB8nw_-iH5TLps5ig3zipLPoKVZZKO8fOvEVJIwp3MQ9wrS4Dzhgw6ypUDhsycDc-YsboVBbRrXxKOYl-77zNHX9E4hynYyJfVVzXn7ldtURk3Ij3pHIMwqzfDdUxyhYaIJe5dRYa0JN5RpHbPNaV33TcM-IoYW11wNUCKkivtfgC3tk7hkKa3gue7ZTjLhR1ZOE_A1MvMZ3rgBxGDg-HFASH4YP6jI3rwMM',
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuDRCEooMTK0GZV_7SdAorgeIN1pNz3R9YsLv-2pv39FOje7BUWCWPnKOSA1f6rlYcw7IoJ8NxUp4OU-MAk5_ucnykEtps56-kR6DtQ9JgLlCNyiuazO87fy-xCtXVNROT9kquBZ2JUvUtNGRwWiBaK1DnXOHSxp3ELHbLK8MNS-Ht3Gw8dXgNbya4bZiHZ7C-YnCJfwPjX25zrrQypfbiJsS8jjxFq3--uC264Zbhxp8XCsqDid3BIaJ8RdNMRze6lVvpg49N7Z0tI',
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBk_c2n3UBtDQJ-NNLPp9wHCUtPuJTKQi4jnndp2ZNKTRfxtmV85MELPvVecn7Ef74j23fC3l08ZwEbHr70k5C1eHlVG8Pj-K0GWve-DoShWQNa5VGFhBad_Vtlxlu_u22wpBT3475EVHpmhcfwY2FekfCxqUrc_fGSBlHLcKIZ8XsNyHpAPUqUD2n10H86tm9E1nexgYeFUXpLsgB-FRTtya2tTZZ8kTJ-i0Mv6kWLi-LJgvYuYsN2lB0jZi0Q7xxJe6O1M-vA9eg',
+];
+
 export const FEATURED_PROPERTIES: Property[] = [
   {
     id: 'feat-1',
+    slug: 'the-glass-pavilion-beverly-hills-california',
     title: 'The Glass Pavilion',
     price: 5250000,
     priceFormatted: '$5,250,000',
@@ -13,15 +21,23 @@ export const FEATURED_PROPERTIES: Property[] = [
     area: '4,200 m²',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuCra-FKp81t0_OM8bWD55m2o9OOSnR_v7D0UilyExMImxyIcr9tIMZ2Py3HcC0ra_MtSsBkduMcwxUNKI9_iSXFFr_YRON1SF9hNM3fcYy-uG7N7uusL0Z367WINi1V7_GwfNQx-gsbUqLtzVi4ivFyqFQGb4qBs79bALeSFb6i3_ZnJnI1VVrN-VeZYHjfYyQI5C6zy90N3uxWZpwzIBhNoUDKKQjQ8EOEYPoyPTzhnh6b6AS3dkkFJ8t4xSDC6qjhMrQUoUPnAeM',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuCra-FKp81t0_OM8bWD55m2o9OOSnR_v7D0UilyExMImxyIcr9tIMZ2Py3HcC0ra_MtSsBkduMcwxUNKI9_iSXFFr_YRON1SF9hNM3fcYy-uG7N7uusL0Z367WINi1V7_GwfNQx-gsbUqLtzVi4ivFyqFQGb4qBs79bALeSFb6i3_ZnJnI1VVrN-VeZYHjfYyQI5C6zy90N3uxWZpwzIBhNoUDKKQjQ8EOEYPoyPTzhnh6b6AS3dkkFJ8t4xSDC6qjhMrQUoUPnAeM',
+      ...sampleGallery,
+    ],
     imageAlt: 'Luxury modern villa exterior with pool',
     type: 'villa',
     status: 'sale',
     isFeatured: true,
     tag: 'Exclusive',
     isFavorite: false,
+    garage: 3,
+    latitude: 34.0736,
+    longitude: -118.4004,
   },
   {
     id: 'feat-2',
+    slug: 'azure-heights-penthouse-downtown-vancouver',
     title: 'Azure Heights Penthouse',
     price: 3800000,
     priceFormatted: '$3,800,000',
@@ -32,18 +48,26 @@ export const FEATURED_PROPERTIES: Property[] = [
     area: '2,100 m²',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDurAGHzg_fpQxFal-obkFVy1Q3WLPdueAQpz0itcQiRV-WfvulnBEDJbNeV8J06q4mX7PTtXYVJjX4-mHVr_khZLZxQ_s8f6fruGqzeqALyMu8wEHRK1EsOs9f4_jPmS7FxcdzrDkR88Wz0GjaPLXkTZRoJQfur59rxYRLi-WYcW-VU_gKS39CPLOMlftvqGvW0IOk5tXgst5mJ4WQM-ICN4vkdel9ido9YFUQga0OI10i6NSe5W4owt33-2YRi_b_ltdZW2QZC5s',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDurAGHzg_fpQxFal-obkFVy1Q3WLPdueAQpz0itcQiRV-WfvulnBEDJbNeV8J06q4mX7PTtXYVJjX4-mHVr_khZLZxQ_s8f6fruGqzeqALyMu8wEHRK1EsOs9f4_jPmS7FxcdzrDkR88Wz0GjaPLXkTZRoJQfur59rxYRLi-WYcW-VU_gKS39CPLOMlftvqGvW0IOk5tXgst5mJ4WQM-ICN4vkdel9ido9YFUQga0OI10i6NSe5W4owt33-2YRi_b_ltdZW2QZC5s',
+      ...sampleGallery,
+    ],
     imageAlt: 'Modern interior living room with view',
     type: 'penthouse',
     status: 'sale',
     isFeatured: true,
     tag: 'New Arrival',
     isFavorite: false,
+    garage: 2,
+    latitude: 49.2827,
+    longitude: -123.1207,
   },
 ];
 
 export const INITIAL_MARKET_PROPERTIES: Property[] = [
   {
     id: 'prop-1',
+    slug: 'modern-family-home-seattle-washington',
     title: 'Modern Family Home',
     price: 850000,
     priceFormatted: '$850,000',
@@ -54,6 +78,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '120m²',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDuQ9M7U6euA6_cXmYuXnej-N5IuawAW8ds-4G1mzfqmiBc13qXsPhf9_j_zTB8gfEunrBHo8xMsxYwCw_pl8fsxbxRkmyvLR1N9Tiye5ZJG7fwlLn9MwyBanXYhE0emGwp59es1FEyQTRQbmXLUKO74Yj34ZHqrqIkOtMKhP8CmRFvfoHT5LAe10105vUhKNkxIBvtt530nfLigSUTemOOcJMVNmsgactntRJUwOBU_TZzND7BYtDklr8uZcNYlQOK5U74-ufIf-E',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDuQ9M7U6euA6_cXmYuXnej-N5IuawAW8ds-4G1mzfqmiBc13qXsPhf9_j_zTB8gfEunrBHo8xMsxYwCw_pl8fsxbxRkmyvLR1N9Tiye5ZJG7fwlLn9MwyBanXYhE0emGwp59es1FEyQTRQbmXLUKO74Yj34ZHqrqIkOtMKhP8CmRFvfoHT5LAe10105vUhKNkxIBvtt530nfLigSUTemOOcJMVNmsgactntRJUwOBU_TZzND7BYtDklr8uZcNYlQOK5U74-ufIf-E',
+      ...sampleGallery,
+    ],
     imageAlt: 'Modern white house facade',
     type: 'house',
     status: 'sale',
@@ -62,6 +90,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-2',
+    slug: 'urban-loft-portland-oregon',
     title: 'Urban Loft',
     price: 3200,
     priceFormatted: '$3,200',
@@ -73,6 +102,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '85m²',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuB4zNatD3vePhIZAi6OHHJKmamYSgeBNSKjEt32tvkkf4s6aBXCF8R4LNfDfPa9leA0t6N1OKOcP358WwZrnosbCBxSM7EaY2_P7qkx3MinRgmHQn7RvleNTwy8cLigMoR3iv0u83chBVbZYI6BcNMcqv80W-l1pIUgIWZcDIXEqtUatrsojSGfM0lTNDZpkBntBUkRY6NB4ZUymYNYvTHXKbO8NZ6N6uoyuuHqcaRWKzHCNXkOR3p-_EVFAHR8QwijIY_m1mefPZ4',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuB4zNatD3vePhIZAi6OHHJKmamYSgeBNSKjEt32tvkkf4s6aBXCF8R4LNfDfPa9leA0t6N1OKOcP358WwZrnosbCBxSM7EaY2_P7qkx3MinRgmHQn7RvleNTwy8cLigMoR3iv0u83chBVbZYI6BcNMcqv80W-l1pIUgIWZcDIXEqtUatrsojSGfM0lTNDZpkBntBUkRY6NB4ZUymYNYvTHXKbO8NZ6N6uoyuuHqcaRWKzHCNXkOR3p-_EVFAHR8QwijIY_m1mefPZ4',
+      ...sampleGallery,
+    ],
     imageAlt: 'Stylish apartment living room',
     type: 'apartment',
     status: 'rent',
@@ -81,6 +114,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-3',
+    slug: 'highland-retreat-bend-oregon',
     title: 'Highland Retreat',
     price: 620000,
     priceFormatted: '$620,000',
@@ -91,6 +125,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '98m²',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuARQWC19e7mleUpjb8CWLztEv_svJeRFOaC2i-9r9GctFuX5Barzhfai9wNM1WW8bcGlqdFM32d3KPf7SItom5ijdHOz5rGGQPeT7PlWs8-y9LkfcsHLQqsLxalhxP94XJo76_mAMp7T2dVj3hPKHNzTDLLiS6ujSdSsyo3onxQthp4ZkVE8op92gyTLUUucaGaxO8vJvyhH3HuWB07EPqT1WsW0lr9Of5lUPonjG9eiqE1XiJXTqzXUZQt5JorfPwCO1MioZA_Zro',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuARQWC19e7mleUpjb8CWLztEv_svJeRFOaC2i-9r9GctFuX5Barzhfai9wNM1WW8bcGlqdFM32d3KPf7SItom5ijdHOz5rGGQPeT7PlWs8-y9LkfcsHLQqsLxalhxP94XJo76_mAMp7T2dVj3hPKHNzTDLLiS6ujSdSsyo3onxQthp4ZkVE8op92gyTLUUucaGaxO8vJvyhH3HuWB07EPqT1WsW0lr9Of5lUPonjG9eiqE1XiJXTqzXUZQt5JorfPwCO1MioZA_Zro',
+      ...sampleGallery,
+    ],
     imageAlt: 'Cabin in the woods',
     type: 'house',
     status: 'sale',
@@ -99,6 +137,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-4',
+    slug: 'sea-view-penthouse-miami-florida',
     title: 'Sea View Penthouse',
     price: 4500,
     priceFormatted: '$4,500',
@@ -110,6 +149,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '180m²',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuBGq4Phm0uDzCnjHAsnWpYTBVpOds_M6iOsJuRQQA5eUZHkztGgtc7eh_OE6wBeyW1-iZh7yyhROnvvmqkAZ9tyAWFGXk0FG52zU4kZ_EDLA0U0cRszy7byNXTeWe0_hS53SYmtCTEV8Y1AM-WxiIC38UMa15QwFDjXtCGQOxoh35K0Ol_70vfsxm0VqDbaWkr8tcEbLTLy0NXH_GcpGK4lAXizgxYOIlFWGyau-4OIfPZRpjCBDbz_qu3VlN201UUJGiuM9ajVd-U',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBGq4Phm0uDzCnjHAsnWpYTBVpOds_M6iOsJuRQQA5eUZHkztGgtc7eh_OE6wBeyW1-iZh7yyhROnvvmqkAZ9tyAWFGXk0FG52zU4kZ_EDLA0U0cRszy7byNXTeWe0_hS53SYmtCTEV8Y1AM-WxiIC38UMa15QwFDjXtCGQOxoh35K0Ol_70vfsxm0VqDbaWkr8tcEbLTLy0NXH_GcpGK4lAXizgxYOIlFWGyau-4OIfPZRpjCBDbz_qu3VlN201UUJGiuM9ajVd-U',
+      ...sampleGallery,
+    ],
     imageAlt: 'Bright bedroom with large window',
     type: 'penthouse',
     status: 'rent',
@@ -118,6 +161,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-5',
+    slug: 'central-studio-chicago-illinois',
     title: 'Central Studio',
     price: 550000,
     priceFormatted: '$550,000',
@@ -128,6 +172,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '50m²',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuA1w-Hb1289NqZKon3VK8bpmMiCDYYiAMT5egzTINo9m9wSZRHv-k-1IGTVoL1NT8YeZXJHa87JPNDIPrtrbP7jChHq0ypXF90uByhC6VA9O788_B4FY8JVg4chbWN9bcrn9-9FvVvfZX8Aj60Iqg_C8CsCA9DEnJqi2rJvzmK5UP5z-9XRTRjBneAPCa8iGgGWBD9yYKsziN6vn0ePBDGo3inieQtmbr46W31p6UfQ649XRxTm7ygOY2J-jxW1r0qWs8i97KGpkTE',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuA1w-Hb1289NqZKon3VK8bpmMiCDYYiAMT5egzTINo9m9wSZRHv-k-1IGTVoL1NT8YeZXJHa87JPNDIPrtrbP7jChHq0ypXF90uByhC6VA9O788_B4FY8JVg4chbWN9bcrn9-9FvVvfZX8Aj60Iqg_C8CsCA9DEnJqi2rJvzmK5UP5z-9XRTRjBneAPCa8iGgGWBD9yYKsziN6vn0ePBDGo3inieQtmbr46W31p6UfQ649XRxTm7ygOY2J-jxW1r0qWs8i97KGpkTE',
+      ...sampleGallery,
+    ],
     imageAlt: 'Cozy apartment interior',
     type: 'studio',
     status: 'sale',
@@ -136,6 +184,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-6',
+    slug: 'garden-villa-austin-texas',
     title: 'Garden Villa',
     price: 2800,
     priceFormatted: '$2,800',
@@ -147,6 +196,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '110m²',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuCfGXdY0g51ojSg0GMeTW9ndLY3mpKK3oMtWxo2nwd_dwi1pgn1Boi_ovaDGIFhUA7nwu3WdBch8ZuHxoHu3QfgM5ceAsp8pglRVyCROWNcy9zeDNP2wqLoevyKGcaEyFYHYpIx2KK46nLWthnHiHugmkKw48kJsL8IjMO1bL3T1Zwt8bvQDTTUHTgB3GqZ2RU2asRzF1jVg0rLw3LWXXTq0YF1CsbhlWpYOuCEpH5bB8zkBlbKXR4At_M46AL8rJqn5c6BrPD5PP8',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuCfGXdY0g51ojSg0GMeTW9ndLY3mpKK3oMtWxo2nwd_dwi1pgn1Boi_ovaDGIFhUA7nwu3WdBch8ZuHxoHu3QfgM5ceAsp8pglRVyCROWNcy9zeDNP2wqLoevyKGcaEyFYHYpIx2KK46nLWthnHiHugmkKw48kJsL8IjMO1bL3T1Zwt8bvQDTTUHTgB3GqZ2RU2asRzF1jVg0rLw3LWXXTq0YF1CsbhlWpYOuCEpH5bB8zkBlbKXR4At_M46AL8rJqn5c6BrPD5PP8',
+      ...sampleGallery,
+    ],
     imageAlt: 'Modern minimalist home exterior',
     type: 'villa',
     status: 'rent',
@@ -155,6 +208,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-7',
+    slug: 'sunset-coastline-residence-malibu-california',
     title: 'Sunset Coastline Residence',
     price: 1450000,
     priceFormatted: '$1,450,000',
@@ -165,6 +219,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '290m²',
     imageUrl:
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Luxury beachfront residence with pool',
     type: 'villa',
     status: 'sale',
@@ -173,6 +231,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-8',
+    slug: 'skyline-terrace-condo-san-francisco-california',
     title: 'Skyline Terrace Condo',
     price: 3600,
     priceFormatted: '$3,600',
@@ -184,6 +243,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '105m²',
     imageUrl:
       'https://images.unsplash.com/photo-1567496898669-ee935f5f647a?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1567496898669-ee935f5f647a?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Luxury city condominium with skyline panorama',
     type: 'apartment',
     status: 'rent',
@@ -192,6 +255,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-9',
+    slug: 'the-beverly-mirage-beverly-hills-california',
     title: 'The Beverly Mirage',
     price: 4750000,
     priceFormatted: '$4,750,000',
@@ -202,6 +266,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '450m²',
     imageUrl:
       'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Modern contemporary villa with illuminated pool',
     type: 'villa',
     status: 'sale',
@@ -210,6 +278,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-10',
+    slug: 'nordic-pine-chalet-aspen-colorado',
     title: 'Nordic Pine Chalet',
     price: 1890000,
     priceFormatted: '$1,890,000',
@@ -220,6 +289,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '310m²',
     imageUrl:
       'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Luxury modern alpine chalet in the mountains',
     type: 'house',
     status: 'sale',
@@ -228,6 +301,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-11',
+    slug: 'solarium-sky-penthouse-miami-florida',
     title: 'Solarium Sky Penthouse',
     price: 7900,
     priceFormatted: '$7,900',
@@ -239,6 +313,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '240m²',
     imageUrl:
       'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Luxury penthouse living space with panoramic windows',
     type: 'penthouse',
     status: 'rent',
@@ -247,6 +325,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-12',
+    slug: 'soho-design-loft-studio-new-york-new-york',
     title: 'SoHo Design Loft Studio',
     price: 3400,
     priceFormatted: '$3,400',
@@ -258,6 +337,10 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
     area: '65m²',
     imageUrl:
       'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Minimalist designer studio apartment in SoHo',
     type: 'studio',
     status: 'rent',
@@ -269,6 +352,7 @@ export const INITIAL_MARKET_PROPERTIES: Property[] = [
 export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
   {
     id: 'prop-13',
+    slug: 'pacific-horizon-house-laguna-beach-california',
     title: 'Pacific Horizon House',
     price: 2150000,
     priceFormatted: '$2,150,000',
@@ -279,6 +363,10 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
     area: '275m²',
     imageUrl:
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Contemporary ocean view architectural home',
     type: 'house',
     status: 'sale',
@@ -287,6 +375,7 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-14',
+    slug: 'the-tribeca-grand-new-york-new-york',
     title: 'The Tribeca Grand',
     price: 4200000,
     priceFormatted: '$4,200,000',
@@ -297,6 +386,10 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
     area: '220m²',
     imageUrl:
       'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'High-end luxury apartment interior with marble finish',
     type: 'apartment',
     status: 'sale',
@@ -305,6 +398,7 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-15',
+    slug: 'emerald-palms-villa-maui-hawaii',
     title: 'Emerald Palms Villa',
     price: 3850000,
     priceFormatted: '$3,850,000',
@@ -315,6 +409,10 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
     area: '480m²',
     imageUrl:
       'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Tropical luxury beachfront villa with pool',
     type: 'villa',
     status: 'sale',
@@ -323,6 +421,7 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-16',
+    slug: 'bel-air-summit-estate-los-angeles-california',
     title: 'Bel-Air Summit Estate',
     price: 6900000,
     priceFormatted: '$6,900,000',
@@ -333,6 +432,10 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
     area: '580m²',
     imageUrl:
       'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Ultra luxury estate in Bel-Air with expansive grounds',
     type: 'villa',
     status: 'sale',
@@ -341,6 +444,7 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-17',
+    slug: 'mid-century-zen-retreat-palm-springs-california',
     title: 'Mid-Century Zen Retreat',
     price: 1280000,
     priceFormatted: '$1,280,000',
@@ -351,6 +455,10 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
     area: '195m²',
     imageUrl:
       'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Mid-century modern home with zen courtyard',
     type: 'house',
     status: 'sale',
@@ -359,6 +467,7 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
   },
   {
     id: 'prop-18',
+    slug: 'atelier-urban-studio-seattle-washington',
     title: 'Atelier Urban Studio',
     price: 2100,
     priceFormatted: '$2,100',
@@ -370,6 +479,10 @@ export const ADDITIONAL_MARKET_PROPERTIES: Property[] = [
     area: '55m²',
     imageUrl:
       'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+      ...sampleGallery,
+    ],
     imageAlt: 'Cozy modern studio apartment with warm wooden textures',
     type: 'studio',
     status: 'rent',
