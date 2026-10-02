@@ -58,8 +58,8 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
 
   // Local state for all filters
   const [location, setLocation] = useState('');
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(15000000);
+  const [minPrice, setMinPrice] = useState<number>(MIN_LIMIT);
+  const [maxPrice, setMaxPrice] = useState<number>(MAX_LIMIT);
   const [propertyType, setPropertyType] = useState<PropertyCategory>('all');
   const [bedrooms, setBedrooms] = useState<number>(0);
   const [bathrooms, setBathrooms] = useState<number>(0);
@@ -71,8 +71,8 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
 
     const q = searchParams.get('q') || '';
     const type = (searchParams.get('type') as PropertyCategory) || 'all';
-    const minP = searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : 0;
-    const maxP = searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : 15000000;
+    const minP = searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : MIN_LIMIT;
+    const maxP = searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : MAX_LIMIT;
     const beds = searchParams.get('beds') ? Number(searchParams.get('beds')) : 0;
     const baths = searchParams.get('baths') ? Number(searchParams.get('baths')) : 0;
     const amenitiesParam = searchParams.get('amenities');
@@ -118,8 +118,8 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
 
   const handleClear = () => {
     setLocation('');
-    setMinPrice(0);
-    setMaxPrice(15000000);
+    setMinPrice(MIN_LIMIT);
+    setMaxPrice(MAX_LIMIT);
     setPropertyType('all');
     setBedrooms(0);
     setBathrooms(0);
@@ -141,13 +141,13 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
       params.delete('type');
     }
 
-    if (minPrice > 0) {
+    if (minPrice > MIN_LIMIT) {
       params.set('minPrice', minPrice.toString());
     } else {
       params.delete('minPrice');
     }
 
-    if (maxPrice < 20000000) {
+    if (maxPrice < MAX_LIMIT) {
       params.set('maxPrice', maxPrice.toString());
     } else {
       params.delete('maxPrice');

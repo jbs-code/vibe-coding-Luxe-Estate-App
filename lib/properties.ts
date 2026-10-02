@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import { Property, PropertyCategory, PropertyStatusFilter } from '@/types/property';
 
-export const MARKET_PAGE_SIZE = 6;
+export const MARKET_PAGE_SIZE = 8;
 
 export interface MarketPropertiesResult {
   properties: Property[];
@@ -12,6 +12,7 @@ export interface MarketPropertiesResult {
 
 interface GetMarketPropertiesParams {
   page?: number;
+  pageSize?: number;
   status?: PropertyStatusFilter;
   type?: PropertyCategory;
   search?: string;
@@ -132,6 +133,7 @@ export async function getFeaturedProperties(limit = 6): Promise<Property[]> {
 
 export async function getMarketProperties({
   page = 1,
+  pageSize = MARKET_PAGE_SIZE,
   status = 'all',
   type = 'all',
   search = '',
@@ -142,8 +144,9 @@ export async function getMarketProperties({
   amenities,
 }: GetMarketPropertiesParams): Promise<MarketPropertiesResult> {
   const safePage = Math.max(1, page);
-  const from = (safePage - 1) * MARKET_PAGE_SIZE;
-  const to = from + MARKET_PAGE_SIZE - 1;
+  const limit = pageSize && pageSize > 0 ? pageSize : MARKET_PAGE_SIZE;
+  const from = (safePage - 1) * limit;
+  const to = from + limit - 1;
 
   // Build the count query
   let countQuery = supabase
@@ -221,7 +224,7 @@ export async function getMarketProperties({
   }
 
   const total = count ?? 0;
-  const totalPages = Math.ceil(total / MARKET_PAGE_SIZE);
+  const totalPages = Math.ceil(total / limit);
   const properties = (data ?? []).map(rowToProperty);
 
   return { properties, total, totalPages, currentPage: safePage };

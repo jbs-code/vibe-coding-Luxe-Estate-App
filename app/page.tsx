@@ -14,6 +14,7 @@ export default async function HomeScreen({
   const params = await searchParams;
 
   const page = Math.max(1, parseInt((params.page as string) ?? '1', 10));
+  const pageSize = params.pageSize ? Math.max(1, parseInt(params.pageSize as string, 10)) : undefined;
   const status = (params.status as PropertyStatusFilter) ?? 'all';
   const type = (params.type as PropertyCategory) ?? 'all';
   const search = (params.q as string) ?? '';
@@ -27,9 +28,22 @@ export default async function HomeScreen({
     ? (params.amenities as string[])
     : undefined;
 
-  const [{ properties, totalPages, currentPage }, featuredProperties] = await Promise.all([
+  // Determine if any filters are currently active (search, category, status, price, beds, baths, amenities)
+  const hasActiveFilters = Boolean(
+    (search && search.trim().length > 0) ||
+    (type && type !== 'all') ||
+    (status && status !== 'all') ||
+    (minPrice !== undefined && !isNaN(minPrice) && minPrice > 0) ||
+    (maxPrice !== undefined && !isNaN(maxPrice) && maxPrice < 20000000) ||
+    (beds !== undefined && !isNaN(beds) && beds > 0) ||
+    (baths !== undefined && !isNaN(baths) && baths > 0) ||
+    (amenities && amenities.length > 0)
+  );
+
+  const [{ properties, totalPages, currentPage, total }, featuredProperties] = await Promise.all([
     getMarketProperties({
       page,
+      pageSize,
       status,
       type,
       search,
@@ -39,7 +53,7 @@ export default async function HomeScreen({
       baths,
       amenities,
     }),
-    getFeaturedProperties(),
+    hasActiveFilters ? Promise.resolve([]) : getFeaturedProperties(),
   ]);
 
   return (
@@ -58,8 +72,10 @@ export default async function HomeScreen({
           />
         </Suspense>
 
-        {/* Featured Collections Section */}
-        <FeaturedSection properties={featuredProperties} />
+        {/* Featured Collections Section — Hidden when filters are active */}
+        {!hasActiveFilters && featuredProperties.length > 0 && (
+          <FeaturedSection properties={featuredProperties} />
+        )}
 
         {/* New in Market Section — server-side paginated */}
         <MarketSection
@@ -67,6 +83,8 @@ export default async function HomeScreen({
           statusFilter={status}
           totalPages={totalPages}
           currentPage={currentPage}
+          total={total}
+          pageSize={pageSize}
         />
       </main>
     </div>

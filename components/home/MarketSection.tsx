@@ -8,6 +8,8 @@ interface MarketSectionProps {
   statusFilter: PropertyStatusFilter;
   totalPages: number;
   currentPage: number;
+  total?: number;
+  pageSize?: number;
 }
 
 export const MarketSection: React.FC<MarketSectionProps> = ({
@@ -15,13 +17,20 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
   statusFilter: _statusFilter,
   totalPages,
   currentPage,
+  total,
+  pageSize,
 }) => {
   return (
-    <section>
+    <section id="market-properties-section" className="scroll-mt-8">
       <div className="flex items-end justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-light text-nordic-dark dark:text-white">
-            New in Market
+          <h2 className="text-2xl font-light text-nordic-dark dark:text-white flex items-center gap-3">
+            <span>New in Market</span>
+            {total !== undefined && total > 0 && (
+              <span className="text-xs sm:text-sm font-normal text-nordic-muted dark:text-hint-of-green/60 px-2.5 py-0.5 rounded-full bg-nordic-dark/5 dark:bg-white/5 border border-nordic-dark/5 dark:border-white/10">
+                {total} {total === 1 ? 'property' : 'properties'}
+              </span>
+            )}
           </h2>
           <p className="text-nordic-muted dark:text-hint-of-green/70 mt-1 text-sm">
             Fresh opportunities added this week.
@@ -53,7 +62,12 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
       )}
 
       <Suspense>
-        <Pagination currentPage={currentPage} totalPages={totalPages} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          total={total}
+          pageSize={pageSize}
+        />
       </Suspense>
     </section>
   );
