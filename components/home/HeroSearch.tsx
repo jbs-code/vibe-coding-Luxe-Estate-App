@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useCallback, useTransition } from 'react';
+import React, { useState, useCallback, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PropertyCategory, PropertyStatusFilter } from '@/types/property';
+import { SearchFilterModal } from './SearchFilterModal';
 
 interface HeroSearchProps {
   searchQuery: string;
@@ -19,20 +20,22 @@ const CATEGORIES: { label: string; value: PropertyCategory }[] = [
   { label: 'Studio', value: 'studio' },
 ];
 
-const STATUS_OPTIONS: { label: string; value: PropertyStatusFilter }[] = [
-  { label: 'All', value: 'all' },
-  { label: 'Buy', value: 'sale' },
-  { label: 'Rent', value: 'rent' },
-];
-
 export const HeroSearch: React.FC<HeroSearchProps> = ({
   searchQuery,
   selectedCategory,
-  statusFilter,
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
+  // Count active extra filters from URL
+  const minPrice = searchParams.get('minPrice');
+  const maxPrice = searchParams.get('maxPrice');
+  const beds = searchParams.get('beds');
+  const baths = searchParams.get('baths');
+  const amenities = searchParams.get('amenities');
+  const activeFilterCount = [minPrice, maxPrice, beds, baths, amenities].filter(Boolean).length;
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -94,7 +97,7 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
           </button>
         </form>
 
-        {/* Category Pills */}
+        {/* Category Pills & Filter Modal Button */}
         <div className="flex items-center justify-center gap-3 overflow-x-auto hide-scroll py-2 px-4 -mx-4">
           {CATEGORIES.map((cat) => {
             const isSelected = selectedCategory === cat.value;
@@ -113,29 +116,34 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
             );
           })}
 
-          <div className="w-px h-6 bg-nordic-dark/10 dark:bg-white/10 mx-2 flex-shrink-0" />
+          <div className="w-px h-6 bg-nordic-dark/10 dark:bg-white/10 mx-1 flex-shrink-0" />
 
-          {/* Status Filter Tabs (Buy / Rent / All) */}
-          <div className="flex bg-white dark:bg-white/5 p-1 rounded-lg border border-nordic-dark/5 dark:border-white/10">
-            {STATUS_OPTIONS.map((option) => {
-              const isSelected = statusFilter === option.value;
-              return (
-                <button
-                  key={option.value}
-                  onClick={() => updateParam('status', option.value)}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-nordic-dark text-white dark:bg-hint-of-green dark:text-nordic-dark shadow-sm'
-                      : 'text-nordic-muted hover:text-nordic-dark dark:text-hint-of-green/70 dark:hover:text-hint-of-green'
-                  }`}
-                >
-                  {option.label}
-                </button>
-              );
-            })}
-          </div>
+          {/* Button to open Filters Modal */}
+          <button
+            type="button"
+            onClick={() => setIsFilterModalOpen(true)}
+            className={`inline-flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer shadow-sm ${
+              activeFilterCount > 0
+                ? 'bg-mosque text-white dark:bg-hint-of-green dark:text-nordic-dark shadow-mosque/20 -translate-y-0.5'
+                : 'bg-white dark:bg-white/5 border border-nordic-dark/10 dark:border-white/10 text-nordic-dark dark:text-white hover:border-mosque/50 hover:bg-mosque/5'
+            }`}
+          >
+            <span className="material-icons text-lg">tune</span>
+            <span>Filters</span>
+            {activeFilterCount > 0 && (
+              <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full bg-white text-mosque dark:bg-nordic-dark dark:text-hint-of-green">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Search Filter Modal */}
+      <SearchFilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+      />
     </section>
   );
 };

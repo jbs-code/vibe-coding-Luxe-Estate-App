@@ -15,6 +15,11 @@ interface GetMarketPropertiesParams {
   status?: PropertyStatusFilter;
   type?: PropertyCategory;
   search?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  beds?: number;
+  baths?: number;
+  amenities?: string[];
 }
 
 // Helper to normalize image array from DB
@@ -130,6 +135,11 @@ export async function getMarketProperties({
   status = 'all',
   type = 'all',
   search = '',
+  minPrice,
+  maxPrice,
+  beds,
+  baths,
+  amenities,
 }: GetMarketPropertiesParams): Promise<MarketPropertiesResult> {
   const safePage = Math.max(1, page);
   const from = (safePage - 1) * MARKET_PAGE_SIZE;
@@ -146,6 +156,21 @@ export async function getMarketProperties({
   }
   if (type !== 'all') {
     countQuery = countQuery.eq('type', type);
+  }
+  if (minPrice !== undefined && !isNaN(minPrice)) {
+    countQuery = countQuery.gte('price', minPrice);
+  }
+  if (maxPrice !== undefined && !isNaN(maxPrice)) {
+    countQuery = countQuery.lte('price', maxPrice);
+  }
+  if (beds !== undefined && !isNaN(beds) && beds > 0) {
+    countQuery = countQuery.gte('beds', beds);
+  }
+  if (baths !== undefined && !isNaN(baths) && baths > 0) {
+    countQuery = countQuery.gte('baths', baths);
+  }
+  if (amenities && amenities.length > 0) {
+    countQuery = countQuery.contains('amenities', amenities);
   }
   if (search.trim()) {
     countQuery = countQuery.or(
@@ -166,6 +191,21 @@ export async function getMarketProperties({
   }
   if (type !== 'all') {
     dataQuery = dataQuery.eq('type', type);
+  }
+  if (minPrice !== undefined && !isNaN(minPrice)) {
+    dataQuery = dataQuery.gte('price', minPrice);
+  }
+  if (maxPrice !== undefined && !isNaN(maxPrice)) {
+    dataQuery = dataQuery.lte('price', maxPrice);
+  }
+  if (beds !== undefined && !isNaN(beds) && beds > 0) {
+    dataQuery = dataQuery.gte('beds', beds);
+  }
+  if (baths !== undefined && !isNaN(baths) && baths > 0) {
+    dataQuery = dataQuery.gte('baths', baths);
+  }
+  if (amenities && amenities.length > 0) {
+    dataQuery = dataQuery.contains('amenities', amenities);
   }
   if (search.trim()) {
     dataQuery = dataQuery.or(

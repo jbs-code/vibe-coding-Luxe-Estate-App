@@ -17,6 +17,15 @@ export default async function HomeScreen({
   const status = (params.status as PropertyStatusFilter) ?? 'all';
   const type = (params.type as PropertyCategory) ?? 'all';
   const search = (params.q as string) ?? '';
+  const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
+  const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
+  const beds = params.beds ? Number(params.beds) : undefined;
+  const baths = params.baths ? Number(params.baths) : undefined;
+  const amenities = typeof params.amenities === 'string'
+    ? params.amenities.split(',').filter(Boolean)
+    : Array.isArray(params.amenities)
+    ? (params.amenities as string[])
+    : undefined;
 
   const [{ properties, totalPages, currentPage }, featuredProperties] = await Promise.all([
     getMarketProperties({
@@ -24,6 +33,11 @@ export default async function HomeScreen({
       status,
       type,
       search,
+      minPrice,
+      maxPrice,
+      beds,
+      baths,
+      amenities,
     }),
     getFeaturedProperties(),
   ]);
