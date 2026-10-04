@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface PaginationProps {
   currentPage: number;
@@ -58,6 +59,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
+  const { t, interpolate } = useLanguage();
 
   // Track window width dynamically for responsive pagination
   const [windowWidth, setWindowWidth] = useState<number>(1024);
@@ -115,15 +117,17 @@ export const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <nav
-      aria-label="Property pagination"
+      aria-label={t.pagination.ariaLabel}
       className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-nordic-dark/5 dark:border-white/10 pt-6"
     >
       {/* Dynamic Results info */}
       <div className="text-xs sm:text-sm text-nordic-muted dark:text-hint-of-green/70 text-center sm:text-left">
-        Showing page <span className="font-semibold text-nordic-dark dark:text-white">{currentPage}</span> of{' '}
+        {t.pagination.showingPage}{' '}
+        <span className="font-semibold text-nordic-dark dark:text-white">{currentPage}</span>{' '}
+        {t.pagination.of}{' '}
         <span className="font-semibold text-nordic-dark dark:text-white">{totalPages}</span>
         {total !== undefined && total > 0 && (
-          <span className="hidden md:inline"> ({total} total properties)</span>
+          <span className="hidden md:inline"> {interpolate(t.pagination.totalProperties, { total })}</span>
         )}
       </div>
 
@@ -134,8 +138,8 @@ export const Pagination: React.FC<PaginationProps> = ({
           <button
             onClick={() => navigateTo(1)}
             disabled={currentPage <= 1}
-            aria-label="First page"
-            title="First page"
+            aria-label={t.pagination.firstPage}
+            title={t.pagination.firstPage}
             className={`hidden lg:flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium transition-all cursor-pointer
               ${
                 currentPage <= 1
@@ -151,7 +155,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => navigateTo(currentPage - 1)}
           disabled={currentPage <= 1}
-          aria-label="Previous page"
+          aria-label={t.pagination.previousPage}
           className={`flex items-center gap-1 px-2.5 sm:px-3.5 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer
             ${
               currentPage <= 1
@@ -160,7 +164,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             }`}
         >
           <span className="material-icons text-[18px]">chevron_left</span>
-          {!isSmallMobile && <span className="hidden xs:inline sm:inline text-xs sm:text-sm">Prev</span>}
+          {!isSmallMobile && <span className="hidden xs:inline sm:inline text-xs sm:text-sm">{t.pagination.prev}</span>}
         </button>
 
         {/* Dynamic Page numbers */}
@@ -177,7 +181,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               <button
                 key={`page-${page}`}
                 onClick={() => navigateTo(page as number)}
-                aria-label={`Page ${page}`}
+                aria-label={interpolate(t.pagination.pageNumber, { page: page as number })}
                 aria-current={page === currentPage ? 'page' : undefined}
                 className={`min-w-8 sm:min-w-9 h-9 px-2 sm:px-3 flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer
                   ${
@@ -196,7 +200,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => navigateTo(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          aria-label="Next page"
+          aria-label={t.pagination.nextPage}
           className={`flex items-center gap-1 px-2.5 sm:px-3.5 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer
             ${
               currentPage >= totalPages
@@ -204,7 +208,7 @@ export const Pagination: React.FC<PaginationProps> = ({
                 : 'text-nordic-dark dark:text-hint-of-green hover:bg-white dark:hover:bg-white/10 hover:shadow-sm border border-transparent hover:border-nordic-dark/10 dark:hover:border-white/10'
             }`}
         >
-          {!isSmallMobile && <span className="hidden xs:inline sm:inline text-xs sm:text-sm">Next</span>}
+          {!isSmallMobile && <span className="hidden xs:inline sm:inline text-xs sm:text-sm">{t.pagination.next}</span>}
           <span className="material-icons text-[18px]">chevron_right</span>
         </button>
 
@@ -213,8 +217,8 @@ export const Pagination: React.FC<PaginationProps> = ({
           <button
             onClick={() => navigateTo(totalPages)}
             disabled={currentPage >= totalPages}
-            aria-label="Last page"
-            title="Last page"
+            aria-label={t.pagination.lastPage}
+            title={t.pagination.lastPage}
             className={`hidden lg:flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium transition-all cursor-pointer
               ${
                 currentPage >= totalPages
@@ -229,4 +233,3 @@ export const Pagination: React.FC<PaginationProps> = ({
     </nav>
   );
 };
-

@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import { PropertyAgent } from '@/types/property';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface AgentCardProps {
   priceFormatted: string;
@@ -28,13 +29,15 @@ export const AgentCard: React.FC<AgentCardProps> = ({
   const [userName, setUserName] = useState('');
   const [userPhone, setUserPhone] = useState('');
 
+  const { t, interpolate, getLocalizedPricePeriod } = useLanguage();
+
   const agentData: PropertyAgent = agent || {
     name: 'Sarah Jenkins',
     avatar:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuD4TxUmdQRb2VMjuaNxLEwLorv_dgHzoET2_wL5toSvew6nhtziaR3DX-U69DBN7J74yO6oKokpw8tqEFutJf13MeXghCy7FwZuAxnoJel6FYcKeCRUVinpZtrNnkZvXd-MY5_2MAtRD7JP5BieHixfCaeAPW04jm-y-nvF3HIrwcZ_HRDk_MrNP5WiPV3u9zNrEgM-SQoWGh4xLVSV444aZAbVl03mjjsW5WBpIeodCyqJxprTDp6Q157D06VxcdUSCf-l9UKQT-w',
     phone: '+1 (555) 349-8200',
     email: 'sarah.jenkins@luxeestate.com',
-    title: 'Top Rated Agent',
+    title: t.agent.topRatedAgent,
   };
 
   const handleScheduleSubmit = (e: React.FormEvent) => {
@@ -46,11 +49,19 @@ export const AgentCard: React.FC<AgentCardProps> = ({
     }, 2500);
   };
 
+  const localizedPeriod = getLocalizedPricePeriod(pricePeriod);
+
+  const mailToSubject = interpolate(t.agent.emailSubject, { title: propertyTitle });
+  const mailToBody = interpolate(t.agent.emailBody, {
+    agentName: agentData.name,
+    propertyTitle,
+    address,
+    location,
+  });
+
   const mailToLink = `mailto:${agentData.email || 'contact@luxeestate.com'}?subject=${encodeURIComponent(
-    `Interés en propiedad: ${propertyTitle}`
-  )}&body=${encodeURIComponent(
-    `Hola ${agentData.name},\n\nEstoy interesado en recibir más información sobre la propiedad "${propertyTitle}" ubicada en ${address}, ${location}.\n\nSaludos cordiales.`
-  )}`;
+    mailToSubject
+  )}&body=${encodeURIComponent(mailToBody)}`;
 
   const telLink = `tel:${agentData.phone?.replace(/[^0-9+]/g, '') || '+15553498200'}`;
 
@@ -63,9 +74,9 @@ export const AgentCard: React.FC<AgentCardProps> = ({
             <h1 className="text-4xl font-display font-light text-nordic dark:text-white">
               {priceFormatted}
             </h1>
-            {pricePeriod && (
+            {localizedPeriod && (
               <span className="text-base text-nordic/60 dark:text-hint-of-green/70">
-                {pricePeriod}
+                {localizedPeriod}
               </span>
             )}
           </div>
@@ -90,21 +101,21 @@ export const AgentCard: React.FC<AgentCardProps> = ({
             <h3 className="font-semibold text-nordic dark:text-white">{agentData.name}</h3>
             <div className="flex items-center gap-1 text-xs text-mosque dark:text-hint-of-green font-medium">
               <span className="material-icons text-[14px]">star</span>
-              <span>{agentData.title || 'Top Rated Agent'}</span>
+              <span>{agentData.title || t.agent.topRatedAgent}</span>
             </div>
           </div>
 
           <div className="ml-auto flex gap-2">
             <a
               href={mailToLink}
-              aria-label={`Enviar correo a ${agentData.name}`}
+              aria-label={interpolate(t.agent.emailAgentAria, { name: agentData.name })}
               className="p-2 rounded-full bg-mosque/10 dark:bg-hint-of-green/20 text-mosque dark:text-hint-of-green hover:bg-mosque hover:text-white dark:hover:bg-hint-of-green dark:hover:text-nordic transition-colors"
             >
               <span className="material-icons text-sm">chat</span>
             </a>
             <a
               href={telLink}
-              aria-label={`Llamar a ${agentData.name}`}
+              aria-label={interpolate(t.agent.callAgentAria, { name: agentData.name })}
               className="p-2 rounded-full bg-mosque/10 dark:bg-hint-of-green/20 text-mosque dark:text-hint-of-green hover:bg-mosque hover:text-white dark:hover:bg-hint-of-green dark:hover:text-nordic transition-colors"
             >
               <span className="material-icons text-sm">call</span>
@@ -122,7 +133,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({
             <span className="material-icons text-xl group-hover:scale-110 transition-transform">
               calendar_today
             </span>
-            Schedule Visit
+            {t.agent.scheduleVisit}
           </button>
 
           <a
@@ -130,7 +141,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({
             className="w-full bg-transparent border border-nordic/10 dark:border-white/20 hover:border-mosque dark:hover:border-hint-of-green text-nordic/80 hover:text-mosque dark:text-white/80 dark:hover:text-hint-of-green py-4 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <span className="material-icons text-xl">mail_outline</span>
-            Contact Agent
+            {t.agent.contactAgent}
           </a>
         </div>
       </div>
@@ -146,7 +157,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({
             <button
               onClick={() => setContactModalOpen(false)}
               className="absolute top-4 right-4 p-2 text-nordic/50 hover:text-nordic dark:text-white/50 dark:hover:text-white transition-colors cursor-pointer"
-              aria-label="Cerrar modal"
+              aria-label={t.agent.closeModal}
             >
               <span className="material-icons">close</span>
             </button>
@@ -156,7 +167,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({
                 <span className="material-icons">event</span>
               </div>
               <div>
-                <h3 className="text-xl font-bold">Agendar Visita Privada</h3>
+                <h3 className="text-xl font-bold">{t.agent.scheduleModalTitle}</h3>
                 <p className="text-xs text-nordic/60 dark:text-white/60 truncate max-w-[260px]">
                   {propertyTitle}
                 </p>
@@ -168,21 +179,23 @@ export const AgentCard: React.FC<AgentCardProps> = ({
                 <div className="w-12 h-12 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400 rounded-full flex items-center justify-center mx-auto">
                   <span className="material-icons text-2xl">check</span>
                 </div>
-                <h4 className="text-lg font-bold text-nordic dark:text-white">¡Visita Solicitada!</h4>
+                <h4 className="text-lg font-bold text-nordic dark:text-white">
+                  {t.agent.visitRequestedTitle}
+                </h4>
                 <p className="text-sm text-nordic/70 dark:text-white/70">
-                  {agentData.name} se pondrá en contacto contigo a la brevedad para confirmar el horario.
+                  {interpolate(t.agent.visitRequestedDesc, { name: agentData.name })}
                 </p>
               </div>
             ) : (
               <form onSubmit={handleScheduleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-nordic/70 dark:text-white/70 mb-1">
-                    Tu Nombre Completo
+                    {t.agent.fullNameLabel}
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="Ej. Juan Pérez"
+                    placeholder={t.agent.fullNamePlaceholder}
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-lg border border-nordic/10 dark:border-white/10 dark:bg-white/5 focus:outline-none focus:border-mosque dark:focus:border-hint-of-green text-sm"
@@ -191,12 +204,12 @@ export const AgentCard: React.FC<AgentCardProps> = ({
 
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-nordic/70 dark:text-white/70 mb-1">
-                    Teléfono / WhatsApp
+                    {t.agent.phoneLabel}
                   </label>
                   <input
                     type="tel"
                     required
-                    placeholder="+52 55 1234 5678"
+                    placeholder={t.agent.phonePlaceholder}
                     value={userPhone}
                     onChange={(e) => setUserPhone(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-lg border border-nordic/10 dark:border-white/10 dark:bg-white/5 focus:outline-none focus:border-mosque dark:focus:border-hint-of-green text-sm"
@@ -206,7 +219,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-nordic/70 dark:text-white/70 mb-1">
-                      Fecha deseada
+                      {t.agent.desiredDateLabel}
                     </label>
                     <input
                       type="date"
@@ -218,7 +231,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-nordic/70 dark:text-white/70 mb-1">
-                      Horario preferido
+                      {t.agent.preferredTimeLabel}
                     </label>
                     <select
                       value={visitTime}
@@ -238,7 +251,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({
                   type="submit"
                   className="w-full bg-mosque hover:bg-primary-hover dark:bg-hint-of-green dark:hover:bg-hint-of-green/90 text-white dark:text-nordic py-3.5 rounded-lg font-semibold transition-colors mt-4 cursor-pointer"
                 >
-                  Confirmar Solicitud de Visita
+                  {t.agent.confirmScheduleButton}
                 </button>
               </form>
             )}

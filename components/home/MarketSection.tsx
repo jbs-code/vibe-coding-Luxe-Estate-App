@@ -1,7 +1,10 @@
+'use client';
+
 import React, { Suspense } from 'react';
 import { Property, PropertyStatusFilter } from '@/types/property';
 import { PropertyCard } from '@/components/shared/PropertyCard';
 import { Pagination } from '@/components/home/Pagination';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface MarketSectionProps {
   properties: Property[];
@@ -20,20 +23,29 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
   total,
   pageSize,
 }) => {
+  const { t, interpolate } = useLanguage();
+
+  const totalPropertiesLabel =
+    total !== undefined && total > 0
+      ? total === 1
+        ? interpolate(t.market.propertyCountSingular, { count: total })
+        : interpolate(t.market.propertyCountPlural, { count: total })
+      : '';
+
   return (
     <section id="market-properties-section" className="scroll-mt-8">
       <div className="flex items-end justify-between mb-8">
         <div>
           <h2 className="text-2xl font-light text-nordic-dark dark:text-white flex items-center gap-3">
-            <span>New in Market</span>
+            <span>{t.market.title}</span>
             {total !== undefined && total > 0 && (
               <span className="text-xs sm:text-sm font-normal text-nordic-muted dark:text-hint-of-green/60 px-2.5 py-0.5 rounded-full bg-nordic-dark/5 dark:bg-white/5 border border-nordic-dark/5 dark:border-white/10">
-                {total} {total === 1 ? 'property' : 'properties'}
+                {totalPropertiesLabel}
               </span>
             )}
           </h2>
           <p className="text-nordic-muted dark:text-hint-of-green/70 mt-1 text-sm">
-            Fresh opportunities added this week.
+            {t.market.subtitle}
           </p>
         </div>
       </div>
@@ -44,10 +56,10 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
             search_off
           </span>
           <h3 className="text-lg font-medium text-nordic-dark dark:text-white">
-            No properties found
+            {t.market.noPropertiesFound}
           </h3>
           <p className="text-nordic-muted dark:text-hint-of-green/70 text-sm mt-1">
-            Try adjusting your search criteria or category filters.
+            {t.market.noPropertiesDescription}
           </p>
         </div>
       ) : (

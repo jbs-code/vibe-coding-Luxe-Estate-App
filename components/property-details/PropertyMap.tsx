@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 const LeafletMapInner = dynamic(() => import('./LeafletMapInner'), {
   ssr: false,
@@ -23,6 +24,7 @@ export const PropertyMap: React.FC<PropertyMapProps> = ({
   location,
 }) => {
   const [mounted, setMounted] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     setMounted(true);
@@ -42,7 +44,7 @@ export const PropertyMap: React.FC<PropertyMapProps> = ({
         <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 animate-pulse flex items-center justify-center">
           <div className="flex flex-col items-center gap-2 text-slate-400">
             <span className="material-icons text-3xl">map</span>
-            <span className="text-xs font-medium">Cargando mapa interactivo...</span>
+            <span className="text-xs font-medium">{t.propertyDetails.loadingMap}</span>
           </div>
         </div>
       )}

@@ -4,6 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Property } from '@/types/property';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface PropertyCardProps {
   property: Property;
@@ -16,6 +17,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   onToggleFavorite,
   onClick,
 }) => {
+  const { t, getLocalizedStatusBadge, getLocalizedPricePeriod } = useLanguage();
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -26,6 +29,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 
   const isRent = property.status === 'rent';
   const propertyHref = `/propiedades/${property.slug || property.id}`;
+  const localizedStatus = getLocalizedStatusBadge(property.status);
+  const localizedPeriod = getLocalizedPricePeriod(property.pricePeriod);
 
   return (
     <Link
@@ -44,7 +49,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         {/* Favorite Button */}
         <button
           onClick={handleFavoriteClick}
-          aria-label={property.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          aria-label={
+            property.isFavorite
+              ? t.propertyDetails.removeFromFavorites
+              : t.propertyDetails.addToFavorites
+          }
           className={`absolute top-3 right-3 p-2 bg-white/90 dark:bg-black/50 rounded-full transition-colors cursor-pointer shadow-sm ${
             property.isFavorite
               ? 'text-red-500 hover:bg-red-50'
@@ -64,7 +73,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
               : 'bg-nordic-dark/90 text-white dark:bg-nordic-dark/95 dark:text-hint-of-green dark:border dark:border-hint-of-green/30'
           }`}
         >
-          {isRent ? 'FOR RENT' : 'FOR SALE'}
+          {localizedStatus}
         </div>
       </div>
 
@@ -72,9 +81,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         <div className="flex justify-between items-baseline mb-2">
           <h3 className="font-bold text-lg text-nordic-dark dark:text-white">
             {property.priceFormatted}
-            {property.pricePeriod && (
+            {localizedPeriod && (
               <span className="text-sm font-normal text-nordic-muted dark:text-hint-of-green/70">
-                {property.pricePeriod}
+                {localizedPeriod}
               </span>
             )}
           </h3>

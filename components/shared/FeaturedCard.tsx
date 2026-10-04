@@ -4,6 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Property } from '@/types/property';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface FeaturedCardProps {
   property: Property;
@@ -16,6 +17,8 @@ export const FeaturedCard: React.FC<FeaturedCardProps> = ({
   onToggleFavorite,
   onClick,
 }) => {
+  const { t, getLocalizedTag, getLocalizedPricePeriod } = useLanguage();
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -25,6 +28,8 @@ export const FeaturedCard: React.FC<FeaturedCardProps> = ({
   };
 
   const propertyHref = `/propiedades/${property.slug || property.id}`;
+  const localizedTag = getLocalizedTag(property.tag);
+  const localizedPeriod = getLocalizedPricePeriod(property.pricePeriod);
 
   return (
     <Link
@@ -34,23 +39,27 @@ export const FeaturedCard: React.FC<FeaturedCardProps> = ({
     >
       <div className="aspect-[4/3] w-full overflow-hidden relative">
         <img
-          alt={property.imageAlt}
+          alt={property.imageAlt || property.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           src={property.imageUrl}
           loading="lazy"
         />
 
         {/* Tag / Badge */}
-        {property.tag && (
+        {localizedTag && (
           <div className="absolute top-4 left-4 bg-hint-of-green/95 dark:bg-hint-of-green text-nordic-dark backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider shadow-sm">
-            {property.tag}
+            {localizedTag}
           </div>
         )}
 
         {/* Favorite Button */}
         <button
           onClick={handleFavoriteClick}
-          aria-label={property.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          aria-label={
+            property.isFavorite
+              ? t.propertyDetails.removeFromFavorites
+              : t.propertyDetails.addToFavorites
+          }
           className={`absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-all cursor-pointer shadow-sm ${
             property.isFavorite
               ? 'text-red-500 hover:bg-red-50'
@@ -79,9 +88,9 @@ export const FeaturedCard: React.FC<FeaturedCardProps> = ({
           </div>
           <span className="text-xl font-semibold text-mosque dark:text-hint-of-green whitespace-nowrap flex-shrink-0">
             {property.priceFormatted}
-            {property.pricePeriod && (
+            {localizedPeriod && (
               <span className="text-sm font-normal text-nordic-muted dark:text-hint-of-green/70">
-                {property.pricePeriod}
+                {localizedPeriod}
               </span>
             )}
           </span>
@@ -90,11 +99,15 @@ export const FeaturedCard: React.FC<FeaturedCardProps> = ({
         <div className="flex items-center gap-4 sm:gap-6 mt-6 pt-6 border-t border-nordic-dark/5 dark:border-white/10">
           <div className="flex items-center gap-2 text-nordic-muted dark:text-hint-of-green/80 text-sm">
             <span className="material-icons text-lg text-mosque/80 dark:text-hint-of-green">king_bed</span>
-            <span>{property.beds} Beds</span>
+            <span>
+              {property.beds} {t.propertyDetails.bedsAbbr}
+            </span>
           </div>
           <div className="flex items-center gap-2 text-nordic-muted dark:text-hint-of-green/80 text-sm">
             <span className="material-icons text-lg text-mosque/80 dark:text-hint-of-green">bathtub</span>
-            <span>{property.baths} Baths</span>
+            <span>
+              {property.baths} {t.propertyDetails.bathsAbbr}
+            </span>
           </div>
           <div className="flex items-center gap-2 text-nordic-muted dark:text-hint-of-green/80 text-sm">
             <span className="material-icons text-lg text-mosque/80 dark:text-hint-of-green">square_foot</span>

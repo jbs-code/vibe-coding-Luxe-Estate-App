@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface PropertyMapProps {
   latitude: number;
@@ -21,6 +22,7 @@ const LeafletMapInner: React.FC<PropertyMapProps> = ({
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -93,7 +95,7 @@ const LeafletMapInner: React.FC<PropertyMapProps> = ({
         className="absolute bottom-2 right-2 bg-white/95 hover:bg-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-md text-nordic hover:text-mosque transition-colors z-[1000] flex items-center gap-1 backdrop-blur-sm"
       >
         <span className="material-icons text-xs text-mosque">open_in_new</span>
-        View on Map
+        {t.propertyDetails.viewOnMap}
       </a>
     </div>
   );

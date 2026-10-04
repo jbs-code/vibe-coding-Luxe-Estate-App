@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface MortgageCalculatorProps {
   price: number;
@@ -11,6 +12,8 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
   const [downPaymentPct, setDownPaymentPct] = useState(20);
   const [years, setYears] = useState(30);
   const [interestRate, setInterestRate] = useState(6.5);
+
+  const { t, interpolate } = useLanguage();
 
   const safePrice = price > 0 ? price : 1000000;
   const downPaymentAmount = (safePrice * downPaymentPct) / 100;
@@ -39,9 +42,16 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
             <span className="material-icons">calculate</span>
           </div>
           <div>
-            <h3 className="font-semibold text-nordic dark:text-white">Estimated Payment</h3>
+            <h3 className="font-semibold text-nordic dark:text-white">
+              {t.mortgage.estimatedPayment}
+            </h3>
             <p className="text-sm text-nordic/60 dark:text-hint-of-green/70">
-              Starting from <strong className="text-mosque dark:text-hint-of-green">{formattedMonthly}/mo</strong> with {downPaymentPct}% down
+              {t.mortgage.startingFrom}{' '}
+              <strong className="text-mosque dark:text-hint-of-green">
+                {formattedMonthly}
+                {t.mortgage.perMonth}
+              </strong>{' '}
+              {interpolate(t.mortgage.withDown, { percent: downPaymentPct })}
             </p>
           </div>
         </div>
@@ -50,7 +60,7 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
           onClick={() => setIsOpen(true)}
           className="whitespace-nowrap px-4 py-2 bg-white dark:bg-white/10 border border-nordic/10 dark:border-white/20 rounded-lg text-sm font-semibold hover:border-mosque dark:hover:border-hint-of-green transition-colors text-nordic dark:text-white cursor-pointer"
         >
-          Calculate Mortgage
+          {t.mortgage.calculateMortgage}
         </button>
       </div>
 
@@ -65,7 +75,7 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
             <button
               onClick={() => setIsOpen(false)}
               className="absolute top-4 right-4 p-2 text-nordic/50 hover:text-nordic dark:text-white/50 dark:hover:text-white transition-colors cursor-pointer"
-              aria-label="Cerrar calculadora"
+              aria-label={t.common.close}
             >
               <span className="material-icons">close</span>
             </button>
@@ -75,9 +85,9 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
                 <span className="material-icons">calculate</span>
               </div>
               <div>
-                <h3 className="text-xl font-bold">Calculadora de Hipoteca</h3>
+                <h3 className="text-xl font-bold">{t.mortgage.calculatorTitle}</h3>
                 <p className="text-xs text-nordic/60 dark:text-white/60">
-                  Precio de la propiedad: ${safePrice.toLocaleString()}
+                  {t.mortgage.propertyPrice} ${safePrice.toLocaleString()}
                 </p>
               </div>
             </div>
@@ -85,14 +95,19 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
             {/* Calculated summary card */}
             <div className="p-5 bg-mosque/10 dark:bg-hint-of-green/10 rounded-xl mb-6 text-center">
               <span className="text-xs uppercase font-semibold text-nordic/60 dark:text-hint-of-green/80">
-                Pago Mensual Estimado
+                {t.mortgage.estimatedMonthlyPayment}
               </span>
               <div className="text-4xl font-bold text-mosque dark:text-hint-of-green my-1">
                 {formattedMonthly}
-                <span className="text-sm font-normal text-nordic/60 dark:text-white/60">/mes</span>
+                <span className="text-sm font-normal text-nordic/60 dark:text-white/60">
+                  {t.mortgage.perMonth}
+                </span>
               </div>
               <p className="text-xs text-nordic/60 dark:text-white/60">
-                Préstamo: ${loanAmount.toLocaleString()} • Enganche: ${downPaymentAmount.toLocaleString()}
+                {interpolate(t.mortgage.loanBreakdown, {
+                  loan: loanAmount.toLocaleString(),
+                  down: downPaymentAmount.toLocaleString(),
+                })}
               </p>
             </div>
 
@@ -100,7 +115,7 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
               {/* Down payment slider */}
               <div>
                 <div className="flex justify-between font-semibold mb-1">
-                  <span>Enganche / Down payment</span>
+                  <span>{t.mortgage.downPaymentLabel}</span>
                   <span className="text-mosque dark:text-hint-of-green font-bold">
                     {downPaymentPct}% (${downPaymentAmount.toLocaleString()})
                   </span>
@@ -119,8 +134,10 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
               {/* Loan Term */}
               <div>
                 <div className="flex justify-between font-semibold mb-1">
-                  <span>Plazo del préstamo</span>
-                  <span className="text-mosque dark:text-hint-of-green font-bold">{years} Años</span>
+                  <span>{t.mortgage.loanTermLabel}</span>
+                  <span className="text-mosque dark:text-hint-of-green font-bold">
+                    {interpolate(t.mortgage.years, { years })}
+                  </span>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {[15, 20, 30].map((term) => (
@@ -134,7 +151,7 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
                           : 'border-nordic/10 dark:border-white/10 hover:border-mosque dark:hover:border-hint-of-green'
                       }`}
                     >
-                      {term} Años
+                      {interpolate(t.mortgage.years, { years: term })}
                     </button>
                   ))}
                 </div>
@@ -143,7 +160,7 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
               {/* Interest rate */}
               <div>
                 <div className="flex justify-between font-semibold mb-1">
-                  <span>Tasa de Interés Anual</span>
+                  <span>{t.mortgage.interestRateLabel}</span>
                   <span className="text-mosque dark:text-hint-of-green font-bold">{interestRate}%</span>
                 </div>
                 <input
@@ -163,7 +180,7 @@ export const MortgageCalculator: React.FC<MortgageCalculatorProps> = ({ price })
               onClick={() => setIsOpen(false)}
               className="w-full mt-6 bg-mosque hover:bg-primary-hover dark:bg-hint-of-green dark:hover:bg-hint-of-green/90 text-white dark:text-nordic py-3 rounded-lg font-semibold transition-colors cursor-pointer"
             >
-              Listo
+              {t.mortgage.doneButton}
             </button>
           </div>
         </div>

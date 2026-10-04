@@ -3,6 +3,7 @@
 import React from 'react';
 import { Property } from '@/types/property';
 import { FeaturedCard } from '@/components/shared/FeaturedCard';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface FeaturedSectionProps {
   properties: Property[];
@@ -15,6 +16,8 @@ export const FeaturedSection: React.FC<FeaturedSectionProps> = ({
   onToggleFavorite,
   onViewAllClick,
 }) => {
+  const { t } = useLanguage();
+
   if (properties.length === 0) return null;
 
   return (
@@ -22,17 +25,17 @@ export const FeaturedSection: React.FC<FeaturedSectionProps> = ({
       <div className="flex items-end justify-between mb-8">
         <div>
           <h2 className="text-2xl font-light text-nordic-dark dark:text-white">
-            Featured Collections
+            {t.featured.title}
           </h2>
           <p className="text-nordic-muted dark:text-hint-of-green/70 mt-1 text-sm">
-            Curated properties for the discerning eye.
+            {t.featured.subtitle}
           </p>
         </div>
         <button
           onClick={onViewAllClick}
           className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque dark:text-hint-of-green hover:opacity-70 transition-opacity cursor-pointer"
         >
-          View all <span className="material-icons text-sm">arrow_forward</span>
+          {t.featured.viewAll} <span className="material-icons text-sm">arrow_forward</span>
         </button>
       </div>
 

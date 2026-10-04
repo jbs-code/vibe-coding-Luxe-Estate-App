@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PropertyCategory } from '@/types/property';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface SearchFilterModalProps {
   isOpen: boolean;
@@ -10,21 +11,21 @@ interface SearchFilterModalProps {
 }
 
 const AMENITY_OPTIONS = [
-  { id: 'Swimming Pool', label: 'Swimming Pool', icon: 'pool' },
-  { id: 'Gym', label: 'Gym', icon: 'fitness_center' },
-  { id: 'Parking', label: 'Parking', icon: 'local_parking' },
-  { id: 'Air Conditioning', label: 'Air Conditioning', icon: 'ac_unit' },
-  { id: 'High-speed Wifi', label: 'High-speed Wifi', icon: 'wifi' },
-  { id: 'Patio / Terrace', label: 'Patio / Terrace', icon: 'deck' },
+  { id: 'Swimming Pool', icon: 'pool' },
+  { id: 'Gym', icon: 'fitness_center' },
+  { id: 'Parking', icon: 'local_parking' },
+  { id: 'Air Conditioning', icon: 'ac_unit' },
+  { id: 'High-speed Wifi', icon: 'wifi' },
+  { id: 'Patio / Terrace', icon: 'deck' },
 ];
 
-const PROPERTY_TYPES: { label: string; value: PropertyCategory }[] = [
-  { label: 'Any Type', value: 'all' },
-  { label: 'House', value: 'house' },
-  { label: 'Apartment', value: 'apartment' },
-  { label: 'Villa', value: 'villa' },
-  { label: 'Penthouse', value: 'penthouse' },
-  { label: 'Studio', value: 'studio' },
+const PROPERTY_TYPES: PropertyCategory[] = [
+  'all',
+  'house',
+  'apartment',
+  'villa',
+  'penthouse',
+  'studio',
 ];
 
 const MIN_LIMIT = 0;
@@ -55,6 +56,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t, getLocalizedCategory, getLocalizedAmenity } = useLanguage();
 
   // Local state for all filters
   const [location, setLocation] = useState('');
@@ -198,13 +200,13 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
         {/* Header */}
         <header className="px-6 sm:px-8 py-5 sm:py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-white dark:bg-gray-900 sticky top-0 z-30">
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
-            Filters
+            {t.filters.modalTitle}
           </h1>
           <button
             type="button"
             onClick={onClose}
             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400 cursor-pointer"
-            aria-label="Close filters"
+            aria-label={t.filters.closeFilters}
           >
             <span className="material-icons text-xl block">close</span>
           </button>
@@ -215,7 +217,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
           {/* Section 1: Location */}
           <section>
             <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-              Location
+              {t.filters.location}
             </label>
             <div className="relative group">
               <span className="material-icons absolute left-4 top-3.5 text-gray-400 group-focus-within:text-mosque dark:group-focus-within:text-hint-of-green transition-colors">
@@ -223,7 +225,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
               </span>
               <input
                 className="w-full pl-12 pr-4 py-3 bg-background-light dark:bg-gray-800 border-0 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-mosque dark:focus:ring-hint-of-green focus:bg-white dark:focus:bg-gray-800 transition-all shadow-sm outline-none text-sm sm:text-base"
-                placeholder="City, neighborhood, or address"
+                placeholder={t.filters.locationPlaceholder}
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
@@ -235,7 +237,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
           <section>
             <div className="flex justify-between items-end mb-4">
               <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Price Range
+                {t.filters.priceRange}
               </label>
               <span className="text-sm font-medium text-mosque dark:text-hint-of-green">
                 {formatPriceDisplay(minPrice)} – {maxPrice >= MAX_LIMIT ? '$20M+' : formatPriceDisplay(maxPrice)}
@@ -295,7 +297,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-background-light dark:bg-gray-800 p-3 rounded-lg border border-transparent focus-within:border-mosque/40 dark:focus-within:border-hint-of-green/40 transition-colors">
                 <label className="block text-[10px] text-gray-500 dark:text-gray-400 uppercase font-medium mb-1">
-                  Min Price
+                  {t.filters.minPrice}
                 </label>
                 <div className="flex items-center">
                   <span className="text-gray-400 mr-1">$</span>
@@ -312,7 +314,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
               </div>
               <div className="bg-background-light dark:bg-gray-800 p-3 rounded-lg border border-transparent focus-within:border-mosque/40 dark:focus-within:border-hint-of-green/40 transition-colors">
                 <label className="block text-[10px] text-gray-500 dark:text-gray-400 uppercase font-medium mb-1">
-                  Max Price
+                  {t.filters.maxPrice}
                 </label>
                 <div className="flex items-center">
                   <span className="text-gray-400 mr-1">$</span>
@@ -335,7 +337,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
             {/* Property Type */}
             <div className="space-y-3">
               <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Property Type
+                {t.filters.propertyType}
               </label>
               <div className="relative">
                 <select
@@ -344,8 +346,8 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
                   className="w-full bg-background-light dark:bg-gray-800 border-0 rounded-lg py-3 pl-4 pr-10 text-gray-900 dark:text-white appearance-none focus:ring-2 focus:ring-mosque dark:focus:ring-hint-of-green cursor-pointer outline-none text-sm sm:text-base shadow-sm"
                 >
                   {PROPERTY_TYPES.map((pt) => (
-                    <option key={pt.value} value={pt.value} className="dark:bg-gray-800">
-                      {pt.label}
+                    <option key={pt} value={pt} className="dark:bg-gray-800">
+                      {pt === 'all' ? t.filters.anyType : getLocalizedCategory(pt)}
                     </option>
                   ))}
                 </select>
@@ -360,7 +362,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
               {/* Beds */}
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  Bedrooms
+                  {t.filters.bedrooms}
                 </span>
                 <div className="flex items-center space-x-3 bg-background-light dark:bg-gray-800 rounded-full p-1 shadow-sm">
                   <button
@@ -372,7 +374,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
                     <span className="material-icons text-base">remove</span>
                   </button>
                   <span className="text-sm font-semibold w-8 text-center text-gray-900 dark:text-white">
-                    {bedrooms === 0 ? 'Any' : `${bedrooms}+`}
+                    {bedrooms === 0 ? t.filters.any : `${bedrooms}+`}
                   </span>
                   <button
                     type="button"
@@ -387,7 +389,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
               {/* Baths */}
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  Bathrooms
+                  {t.filters.bathrooms}
                 </span>
                 <div className="flex items-center space-x-3 bg-background-light dark:bg-gray-800 rounded-full p-1 shadow-sm">
                   <button
@@ -399,7 +401,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
                     <span className="material-icons text-base">remove</span>
                   </button>
                   <span className="text-sm font-semibold w-8 text-center text-gray-900 dark:text-white">
-                    {bathrooms === 0 ? 'Any' : `${bathrooms}+`}
+                    {bathrooms === 0 ? t.filters.any : `${bathrooms}+`}
                   </span>
                   <button
                     type="button"
@@ -416,11 +418,12 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
           {/* Section 4: Amenities & Features */}
           <section>
             <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
-              Amenities &amp; Features
+              {t.filters.amenitiesAndFeatures}
             </label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {AMENITY_OPTIONS.map((amenity) => {
                 const isSelected = selectedAmenities.includes(amenity.id);
+                const localizedAmenity = getLocalizedAmenity(amenity.id);
                 return (
                   <button
                     key={amenity.id}
@@ -439,7 +442,7 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
                     >
                       {amenity.icon}
                     </span>
-                    <span>{amenity.label}</span>
+                    <span>{localizedAmenity}</span>
                     {isSelected && (
                       <span className="absolute top-2 right-2 w-2 h-2 bg-mosque dark:bg-hint-of-green rounded-full" />
                     )}
@@ -457,14 +460,14 @@ export const SearchFilterModal: React.FC<SearchFilterModalProps> = ({
             onClick={handleClear}
             className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors underline decoration-gray-300 underline-offset-4 cursor-pointer"
           >
-            Clear all filters
+            {t.filters.clearAll}
           </button>
           <button
             type="button"
             onClick={handleApply}
             className="bg-mosque hover:bg-mosque/90 dark:bg-hint-of-green dark:text-nordic-dark dark:hover:bg-hint-of-green/90 text-white px-7 sm:px-8 py-3 rounded-lg font-medium shadow-lg shadow-mosque/30 transition-all hover:shadow-mosque/40 flex items-center gap-2 transform active:scale-95 cursor-pointer text-sm sm:text-base"
           >
-            <span>Show Homes</span>
+            <span>{t.filters.showHomes}</span>
             <span className="material-icons text-sm">arrow_forward</span>
           </button>
         </footer>

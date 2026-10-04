@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface PropertyGalleryProps {
   images: string[];
@@ -22,6 +23,7 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { t, interpolate, getLocalizedTag } = useLanguage();
 
   const nextImage = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % safeImages.length);
@@ -49,16 +51,21 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isModalOpen, closeModal, nextImage, prevImage]);
 
+  const localizedTag = getLocalizedTag(tag);
+
   return (
     <>
-      <section className="space-y-4" aria-label="Galería de la propiedad">
+      <section className="space-y-4" aria-label={t.propertyDetails.featuresTitle}>
         {/* Main Hero Image */}
         <div
           onClick={() => setIsModalOpen(true)}
           className="relative aspect-[16/10] overflow-hidden rounded-xl shadow-sm group cursor-pointer bg-slate-100 dark:bg-slate-800"
         >
           <img
-            alt={`${title} - Foto ${activeIndex + 1}`}
+            alt={`${title} - ${interpolate(t.propertyDetails.photoOf, {
+              current: activeIndex + 1,
+              total: safeImages.length,
+            })}`}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             src={safeImages[activeIndex]}
           />
@@ -67,12 +74,12 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({
           <div className="absolute top-4 left-4 flex gap-2 z-10 pointer-events-none">
             {isFeatured && (
               <span className="bg-mosque text-white text-xs font-semibold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
-                Premium
+                {t.featured.premium}
               </span>
             )}
-            {tag && (
+            {localizedTag && (
               <span className="bg-white/95 backdrop-blur text-nordic dark:text-nordic text-xs font-semibold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
-                {tag}
+                {localizedTag}
               </span>
             )}
           </div>
@@ -84,11 +91,11 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({
               e.stopPropagation();
               setIsModalOpen(true);
             }}
-            aria-label="Ver todas las fotos en pantalla completa"
+            aria-label={interpolate(t.propertyDetails.viewAllPhotos, { count: safeImages.length })}
             className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-nordic dark:text-nordic px-4 py-2 rounded-lg text-sm font-semibold shadow-lg backdrop-blur transition-all flex items-center gap-2 cursor-pointer z-10"
           >
             <span className="material-icons text-sm">grid_view</span>
-            View All Photos ({safeImages.length})
+            {interpolate(t.propertyDetails.viewAllPhotos, { count: safeImages.length })}
           </button>
         </div>
 
@@ -102,7 +109,10 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({
                   key={`${img}-${idx}`}
                   type="button"
                   onClick={() => setActiveIndex(idx)}
-                  aria-label={`Ver imagen ${idx + 1} de ${safeImages.length}`}
+                  aria-label={interpolate(t.propertyDetails.photoOf, {
+                    current: idx + 1,
+                    total: safeImages.length,
+                  })}
                   className={`flex-none w-44 aspect-[4/3] rounded-lg overflow-hidden cursor-pointer transition-all snap-start ${
                     isActive
                       ? 'ring-2 ring-mosque ring-offset-2 ring-offset-clear-day opacity-100 scale-100'
@@ -127,7 +137,7 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Visor de galería en pantalla completa"
+          aria-label={t.propertyDetails.viewAllPhotos}
           className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col items-center justify-between p-4 sm:p-6"
         >
           {/* Header */}
@@ -143,7 +153,7 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({
 
             <button
               onClick={closeModal}
-              aria-label="Cerrar galería"
+              aria-label={t.propertyDetails.closeGallery}
               className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
             >
               <span className="material-icons text-2xl">close</span>
@@ -153,7 +163,10 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({
           {/* Main Large Image & Navigation */}
           <div className="relative w-full max-w-5xl h-[70vh] flex items-center justify-center my-auto">
             <img
-              alt={`${title} - Foto ${activeIndex + 1}`}
+              alt={`${title} - ${interpolate(t.propertyDetails.photoOf, {
+                current: activeIndex + 1,
+                total: safeImages.length,
+              })}`}
               className="max-w-full max-h-full object-contain rounded-lg shadow-2xl transition-all duration-300"
               src={safeImages[activeIndex]}
             />
@@ -161,7 +174,7 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({
             {/* Prev Button */}
             <button
               onClick={prevImage}
-              aria-label="Foto anterior"
+              aria-label={t.propertyDetails.previousPhoto}
               className="absolute left-2 sm:-left-12 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/60 hover:bg-mosque text-white transition-all cursor-pointer shadow-lg"
             >
               <span className="material-icons text-2xl">chevron_left</span>
@@ -170,7 +183,7 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({
             {/* Next Button */}
             <button
               onClick={nextImage}
-              aria-label="Foto siguiente"
+              aria-label={t.propertyDetails.nextPhoto}
               className="absolute right-2 sm:-right-12 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/60 hover:bg-mosque text-white transition-all cursor-pointer shadow-lg"
             >
               <span className="material-icons text-2xl">chevron_right</span>
