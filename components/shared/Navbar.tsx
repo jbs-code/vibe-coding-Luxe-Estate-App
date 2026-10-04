@@ -5,6 +5,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { Locale, SUPPORTED_LOCALES } from '@/lib/i18n/config';
+import { useAuth } from '@/lib/auth';
 
 interface NavbarProps {
   activeTab?: string;
@@ -19,10 +20,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [activeNavKey, setActiveNavKey] = useState(activeTab.toLowerCase());
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
 
   const { locale, setLocale, t, locales, currentLocaleMeta } = useLanguage();
+  const { user, isLoading: authLoading, avatarUrl, displayName, email, provider, signOut } = useAuth();
 
   const navLinks = [
     { key: 'buy', label: t.nav.buy, href: '#' },
@@ -31,20 +35,23 @@ export const Navbar: React.FC<NavbarProps> = ({
     { key: 'saved', label: t.nav.savedHomes, href: '#' },
   ];
 
-  // Close language dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setLangDropdownOpen(false);
       }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target as Node)) {
+        setUserDropdownOpen(false);
+      }
     };
-    if (langDropdownOpen) {
+    if (langDropdownOpen || userDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [langDropdownOpen]);
+  }, [langDropdownOpen, userDropdownOpen]);
 
   const handleNavClick = (key: string, label: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -58,6 +65,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleLocaleSelect = (newLocale: Locale) => {
     setLocale(newLocale);
     setLangDropdownOpen(false);
+  };
+
+  const handleSignOut = async () => {
+    setUserDropdownOpen(false);
+    setMobileMenuOpen(false);
+    await signOut();
   };
 
   return (
@@ -95,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </div>
 
-          {/* Right Action Icons & Language Selector */}
+          {/* Right Action Icons, Language Selector & Auth */}
           <div className="flex items-center space-x-3 sm:space-x-4">
             {/* Language Selector Dropdown (Desktop & Tablet) */}
             <div className="relative" ref={dropdownRef}>
@@ -169,19 +182,97 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-background-light dark:border-background-dark" />
             </button>
 
-            {/* Profile Avatar */}
-            <button
-              aria-label={t.common.userProfile}
-              className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 dark:border-white/10 ml-1 cursor-pointer"
-            >
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent hover:ring-mosque dark:hover:ring-hint-of-green transition-all">
-                <img
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAWhQZ663Bd08kmzjbOPmUk4UIxYooNONShMEFXLR-DtmVi6Oz-TiaY77SPwFk7g0OobkeZEOMvt6v29mSOD0Xm2g95WbBG3ZjWXmiABOUwGU0LOySRfVDo-JTXQ0-gtwjWxbmue0qDm91m-zEOEZwAW6iRFB1qC1bAU-wkjxm67Sbztq8w7srHkFT9bVEC86qG-FzhOBTomhAurNRmx9l8Yfqabk328NfdKuVLckgCdaPsNFE3yN65MeoRi05GA_gXIMwG4YDIeA"
-                />
+            {/* Authentication / Profile Section */}
+            {authLoading ? (
+              <div className="w-9 h-9 rounded-full bg-nordic-dark/10 dark:bg-white/10 animate-pulse ml-1" />
+            ) : user ? (
+              /* Logged In User Avatar & Dropdown */
+              <div className="relative" ref={userDropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  aria-label={t.common.userProfile}
+                  aria-expanded={userDropdownOpen}
+                  className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 dark:border-white/10 ml-1 cursor-pointer group"
+                >
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-mosque/15 dark:bg-hint-of-green/20 overflow-hidden ring-2 ring-transparent group-hover:ring-mosque dark:group-hover:ring-hint-of-green transition-all flex items-center justify-center">
+                    {avatarUrl ? (
+                      <img
+                        alt={displayName || 'Profile'}
+                        className="w-full h-full object-cover"
+                        src={avatarUrl}
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span className="text-xs font-bold text-mosque dark:text-hint-of-green uppercase">
+                        {(displayName || email || 'U').charAt(0)}
+                      </span>
+                    )}
+                  </div>
+                </button>
+
+                {/* User Dropdown Menu */}
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-60 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-nordic-dark/10 dark:border-white/10 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                    {/* User info Header */}
+                    <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-800">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-bold text-nordic-dark dark:text-white truncate">
+                          {displayName}
+                        </span>
+                        {provider && (
+                          <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/10 text-nordic-muted dark:text-gray-300">
+                            {provider}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-nordic-muted dark:text-gray-400 truncate">
+                        {email}
+                      </p>
+                    </div>
+
+                    {/* Quick links */}
+                    <div className="py-1">
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setUserDropdownOpen(false);
+                          if (onTabChange) onTabChange(t.nav.savedHomes);
+                        }}
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-nordic-dark dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                      >
+                        <span className="material-icons text-base text-mosque dark:text-hint-of-green">
+                          favorite_border
+                        </span>
+                        <span>{t.nav.savedHomes}</span>
+                      </a>
+                    </div>
+
+                    {/* Sign Out Button */}
+                    <div className="pt-1 border-t border-gray-100 dark:border-gray-800">
+                      <button
+                        type="button"
+                        onClick={handleSignOut}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
+                      >
+                        <span className="material-icons text-base">logout</span>
+                        <span>{t.auth.signOut}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            </button>
+            ) : (
+              /* Logged Out - Sign In Button */
+              <Link
+                href="/login"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-mosque hover:bg-nordic-dark text-white text-xs sm:text-sm font-semibold tracking-wide transition-all shadow-sm hover:shadow cursor-pointer ml-1"
+              >
+                <span className="material-icons text-sm">login</span>
+                <span>{t.auth.signIn}</span>
+              </Link>
+            )}
 
             {/* Mobile Hamburger Toggle */}
             <button
@@ -200,7 +291,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Nav Menu */}
       <div
         className={`md:hidden border-t border-nordic-dark/5 dark:border-white/10 bg-background-light dark:bg-background-dark overflow-hidden transition-all duration-300 ${
-          mobileMenuOpen ? 'max-h-96 py-3 opacity-100' : 'max-h-0 py-0 opacity-0'
+          mobileMenuOpen ? 'max-h-[32rem] py-3 opacity-100' : 'max-h-0 py-0 opacity-0'
         }`}
       >
         <div className="px-4 space-y-1">
@@ -221,6 +312,55 @@ export const Navbar: React.FC<NavbarProps> = ({
               </a>
             );
           })}
+
+          {/* Mobile User Profile / Login Row */}
+          <div className="pt-3 mt-3 border-t border-nordic-dark/10 dark:border-white/10 px-3">
+            {user ? (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-mosque/15 dark:bg-hint-of-green/20 overflow-hidden flex items-center justify-center">
+                    {avatarUrl ? (
+                      <img
+                        alt={displayName}
+                        className="w-full h-full object-cover"
+                        src={avatarUrl}
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span className="text-sm font-bold text-mosque dark:text-hint-of-green uppercase">
+                        {(displayName || email || 'U').charAt(0)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-bold text-nordic-dark dark:text-white truncate">
+                      {displayName}
+                    </p>
+                    <p className="text-xs text-nordic-muted dark:text-gray-400 truncate">
+                      {email}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-xs font-semibold cursor-pointer"
+                >
+                  <span className="material-icons text-sm">logout</span>
+                  <span>{t.auth.signOut}</span>
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-mosque text-white text-sm font-semibold tracking-wide shadow-sm"
+              >
+                <span className="material-icons text-base">login</span>
+                <span>{t.auth.signIn}</span>
+              </Link>
+            )}
+          </div>
 
           {/* Mobile Language Switcher Row */}
           <div className="pt-3 mt-3 border-t border-nordic-dark/10 dark:border-white/10 flex items-center justify-between px-3">

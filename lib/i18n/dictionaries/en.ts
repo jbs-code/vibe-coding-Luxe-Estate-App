@@ -167,6 +167,23 @@ export const en = {
     interestRateLabel: 'Annual Interest Rate',
     doneButton: 'Done',
   },
+  auth: {
+    welcomeTitle: 'Welcome to LuxeEstate',
+    welcomeSubtitle: 'Unlock exclusive properties worldwide.',
+    continueWithGoogle: 'Continue with Google',
+    continueWithGithub: 'Continue with GitHub',
+    dontHaveAccount: "Don't have an account?",
+    signUp: 'Sign up',
+    privacyPolicy: 'Privacy Policy',
+    termsOfService: 'Terms of Service',
+    helpCenter: 'Help Center',
+    signIn: 'Sign In',
+    signOut: 'Sign Out',
+    signingIn: 'Connecting...',
+    signedInAs: 'Signed in as',
+    myProfile: 'My Profile',
+    loginError: 'An error occurred during sign in. Please try again.',
+  },
 };
 
 export type Dictionary = typeof en;
