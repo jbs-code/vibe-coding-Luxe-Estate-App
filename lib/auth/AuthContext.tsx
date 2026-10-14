@@ -3,11 +3,13 @@
 import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { User, Session, Provider } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
+import type { UserRole } from '@/types/user';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
+  role: UserRole | null;
   avatarUrl: string | null;
   displayName: string;
   email: string | null;
@@ -23,6 +25,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [role, setRole] = useState<UserRole | null>(null);
+
+  const fetchRole = useCallback(async (userId: string) => {
+    try {
+      // 1. Check if user already has a role in the database
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (!error && data?.role) {
+        setRole(data.role as UserRole);
+        return;
+      }
+
+      // 2. If no role is registered yet, assign the default role in the database
+      const { data: assignedRole, error: rpcError } = await supabase.rpc('get_or_create_user_role');
+      if (!rpcError && assignedRole) {
+        setRole(assignedRole as UserRole);
+        return;
+      }
+
+      // Fallback: direct insert with default 'user' role
+      const { error: insertError } = await supabase
+        .from('user_roles')
+        .insert({ user_id: userId, role: 'user' });
+
+      if (!insertError) {
+        setRole('user');
+      } else {
+        setRole('user');
+      }
+    } catch (err) {
+      console.error('[AuthContext] Error getting/assigning role:', err);
+      setRole('user');
+    }
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -33,6 +73,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(initialSession);
         setUser(initialSession?.user ?? null);
         setIsLoading(false);
+        if (initialSession?.user) {
+          fetchRole(initialSession.user.id);
+        }
       }
     }).catch(() => {
       if (mounted) {
@@ -46,6 +89,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(newSession);
         setUser(newSession?.user ?? null);
         setIsLoading(false);
+        if (newSession?.user) {
+          fetchRole(newSession.user.id);
+        } else {
+          setRole(null);
+        }
       }
     });
 
@@ -53,7 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [fetchRole]);
 
   const avatarUrl = useMemo(() => {
     if (!user) return null;
@@ -147,6 +195,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user,
       session,
       isLoading,
+      role,
       avatarUrl,
       displayName,
       email,
@@ -155,7 +204,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       signInWithGitHub,
       signOut,
     }),
-    [user, session, isLoading, avatarUrl, displayName, email, provider, signInWithGoogle, signInWithGitHub, signOut]
+    [user, session, isLoading, role, avatarUrl, displayName, email, provider, signInWithGoogle, signInWithGitHub, signOut]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -15,17 +15,23 @@ function CallbackContent() {
       try {
         const code = searchParams.get('code');
         if (code) {
-          await supabase.auth.exchangeCodeForSession(code);
+          const { data } = await supabase.auth.exchangeCodeForSession(code);
+          if (data?.user) {
+            await supabase.rpc('get_or_create_user_role');
+          }
         } else {
           // In hash-based flow or existing session, refresh session
-          await supabase.auth.getSession();
+          const { data } = await supabase.auth.getSession();
+          if (data?.session?.user) {
+            await supabase.rpc('get_or_create_user_role');
+          }
         }
       } catch (err) {
         console.error('Error during auth callback exchange:', err);
       } finally {
         if (active) {
           const returnUrl = searchParams.get('returnUrl') || '/';
-          router.replace(returnUrl);
+          window.location.href = returnUrl;
         }
       }
     };
