@@ -39,9 +39,22 @@ export function PropertiesTable({ initialProperties }: PropertiesTableProps) {
     return filtered.slice(from, from + ITEMS_PER_PAGE);
   }, [filtered, currentPage]);
 
-  const handleDelete = (id: string) => {
-    setProperties((prev) => prev.filter((p) => p.id !== id));
-    setDeleteConfirmId(null);
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/admin/properties/${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setProperties((prev) => prev.filter((p) => p.id !== id));
+      } else {
+        alert('Error al eliminar la propiedad en la base de datos.');
+      }
+    } catch (err) {
+      console.error('Error deleting property:', err);
+      alert('Error de conexión al eliminar la propiedad.');
+    } finally {
+      setDeleteConfirmId(null);
+    }
   };
 
   return (
@@ -127,14 +140,13 @@ export function PropertiesTable({ initialProperties }: PropertiesTableProps) {
             </div>
 
             {/* Add New Property Button */}
-            <button
-              type="button"
-              onClick={() => alert('Función para agregar nueva propiedad al portafolio.')}
+            <Link
+              href="/admin/properties/new"
               className="bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-md shadow-primary/20 transition-all transform hover:-translate-y-0.5 inline-flex items-center gap-2 cursor-pointer"
             >
               <span className="material-icons text-base">add</span>
               <span>Add New Property</span>
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -265,14 +277,13 @@ export function PropertiesTable({ initialProperties }: PropertiesTableProps) {
 
                   {/* Actions (col-span-2) */}
                   <div className="col-span-12 md:col-span-2 flex items-center justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() => alert(`Editar propiedad: ${property.title}`)}
-                      className="p-2 rounded-lg text-gray-400 hover:text-primary hover:bg-hint-green/30 transition-all cursor-pointer"
+                    <Link
+                      href={`/admin/properties/${property.id}/edit`}
+                      className="p-2 rounded-lg text-gray-400 hover:text-primary hover:bg-hint-green/30 transition-all cursor-pointer inline-flex items-center"
                       title="Edit Property"
                     >
                       <span className="material-icons text-xl">edit</span>
-                    </button>
+                    </Link>
                     <button
                       type="button"
                       onClick={() => setDeleteConfirmId(property.id)}
